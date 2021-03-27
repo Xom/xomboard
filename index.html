@@ -1,0 +1,677 @@
+<html><head><title>XomBoard</title><style>
+
+html { background-color: #252a2f; color: #e4e4e4 }
+html, body, div, img { user-select: none; /* No prefix supported by Chrome and Opera */
+                   -ms-user-select: none; /* Internet Explorer/Edge */
+                  -moz-user-select: none; /* Firefox */
+                -khtml-user-select: none; /* Konqueror HTML */
+               -webkit-user-select: none; /* Safari */
+             -webkit-touch-callout: none; /* iOS Safari */
+}
+div { overflow: hidden }
+a { color: #41e1bb }
+h1, table, #myForm td { padding: 0.5em }
+input { margin: 2px }
+h2 { text-align: center }
+table { width: 100% }
+td { vertical-align: top }
+#recent, #nonRecent { width: 50% }
+#recent { background-color: #36353a }
+#nonRecent { background-color: #3f3b4e }
+.card { position: relative; background-color: #5a5e62; font-size: large; margin: 0.5em; padding: 0.25em; height: 3em }
+.cardItems, .cardUnits { position: absolute; bottom: 0; padding: 0.25em }
+.cardItems { left: 0; z-index: 1 }
+.cardUnits { right: 2px }
+.cardItems .itemIcon { display: inline-block; margin-right: 6px; height: 1.8em; width: 1.8em }
+.cardUnits .unitIcon { display: inline-block; margin-left: 6px; height: 2.8em; width: 2.8em }
+.eliminated { background-color: black; text-decoration: line-through }
+
+.unitIcon, .itemIcon { background-image: url('tft45.png'); border: 1px black solid }
+.unitIcon { background-size: 1300% }
+.itemIcon { background-size: 2600% }
+#iconsDiv { width: 100%; padding: 0 0 33% 0; position: relative; margin-bottom: 0.5em }
+#iconsDiv .unitIcon { position: absolute; height: 17.872%; width: 5.898% }
+#iconsDiv .itemIcon { position: absolute; height: 12.245%; width: 4.041% }
+
+.diana { background-position: 0 0 }
+.tahmkench { background-position: -100% 0 }
+.maokai { background-position: -200% 0 }
+.yasuo { background-position: -300% 0 }
+.fiora { background-position: -400% 0 }
+.elise { background-position: -500% 0 }
+.twistedfate { background-position: -600% 0 }
+.brand { background-position: -700% 0 }
+.tristana { background-position: -800% 0 }
+.nidalee { background-position: -900% 0 }
+.garen { background-position: -1000% 0 }
+.wukong { background-position: -1100% 0 }
+.nasus { background-position: -1200% 0 }
+
+.pyke { background-position: 0 -100% }
+.vi { background-position: -100% -100% }
+.janna { background-position: -200% -100% }
+.jax { background-position: -300% -100% }
+.jarvan { background-position: -400% -100% }
+.rakan { background-position: -500% -100% }
+.lulu { background-position: -600% -100% }
+.annie { background-position: -700% -100% }
+.teemo { background-position: -800% -100% }
+.zed { background-position: -900% -100% }
+.braum { background-position: -1000% -100% }
+.nautilus { background-position: -1100% -100% }
+.vladimir { background-position: -1200% -100% }
+
+.akali { background-position: 0 -200% }
+.katarina { background-position: -100% -200% }
+.nunu { background-position: -200% -200% }
+.shyvana { background-position: -300% -200% }
+.kalista { background-position: -400% -200% }
+.kennen { background-position: -500% -200% }
+.veigar { background-position: -600% -200% }
+.irelia { background-position: -700% -200% }
+.sivir { background-position: -800% -200% }
+.darius { background-position: -900% -200% }
+.yuumi { background-position: -1000% -200% }
+.neeko { background-position: -1100% -200% }
+.kindred { background-position: -1200% -200% }
+
+.talon { background-position: 0 -300% }
+.morgana { background-position: -100% -300% }
+.chogath { background-position: -200% -300% }
+.olaf { background-position: -300% -300% }
+.tryndamere { background-position: -400% -300% }
+.xayah { background-position: -500% -300% }
+.aurelionsol { background-position: -600% -300% }
+.shen { background-position: -700% -300% }
+.kayle { background-position: -800% -300% }
+.sejuani { background-position: -900% -300% }
+.aatrox { background-position: -1000% -300% }
+
+.zilean { background-position: 0 -400% }
+.swain { background-position: -100% -400% }
+.sett { background-position: -200% -400% }
+.samira { background-position: -300% -400% }
+.leesin { background-position: -400% -400% }
+.azir { background-position: -500% -400% }
+.ornn { background-position: -600% -400% }
+.yone { background-position: -700% -400% }
+
+.mage { background-position: -2200% -600% }
+.duelist { background-position: -2300% -600% }
+.divine { background-position: -2400% -600% }
+.elderwood { background-position: -2500% -600% }
+
+.dragonsoul { background-position: -2200% -700% }
+.vanguard { background-position: -2300% -700% }
+.assassin { background-position: -2400% -700% }
+.warlord { background-position: -2500% -700% }
+
+.handofjustice { background-position: -1600% -800% }
+.morellonomicon { background-position: -1700% -800% }
+.runaanshurricane { background-position: -1800% -800% }
+.lastwhisper { background-position: -1900% -800% }
+.zekesherald { background-position: -2000% -800% }
+.infinityedge { background-position: -2100% -800% }
+.locketoftheironsolari { background-position: -2200% -800% }
+.guinsoosrageblade { background-position: -2300% -800% }
+.deathblade { background-position: -2400% -800% }
+.shroudofstillness { background-position: -2500% -800% }
+
+.guardianangel { background-position: -1600% -900% }
+.quicksilver { background-position: -1700% -900% }
+.rapidfirecannon { background-position: -1800% -900% }
+.hextechgunblade { background-position: -1900% -900% }
+.chaliceofpower { background-position: -2000% -900% }
+.jeweledgauntlet { background-position: -2100% -900% }
+.ionicspark { background-position: -2200% -900% }
+.dragonsclaw { background-position: -2300% -900% }
+.rabadonsdeathcap { background-position: -2400% -900% }
+.zephyr { background-position: -2500% -900% }
+
+#iconsDiv .diana { bottom: 76%; left: 0 }
+#iconsDiv .tahmkench { bottom: 76%; left: 6.27% }
+#iconsDiv .maokai { bottom: 76%; left: 12.54% }
+#iconsDiv .yasuo { bottom: 76%; left: 18.82% }
+#iconsDiv .fiora { bottom: 76%; left: 25.08% }
+#iconsDiv .elise { bottom: 76%; left: 31.35% }
+#iconsDiv .twistedfate { bottom: 76%; left: 37.62% }
+#iconsDiv .brand { bottom: 76%; left: 43.89% }
+#iconsDiv .tristana { bottom: 76%; left: 50.16% }
+#iconsDiv .nidalee { bottom: 76%; left: 56.43% }
+#iconsDiv .garen { bottom: 76%; left: 62.7% }
+#iconsDiv .wukong { bottom: 76%; left: 68.97% }
+#iconsDiv .nasus { bottom: 76%; left: 75.24% }
+
+#iconsDiv .pyke { bottom: 57%; left: 0 }
+#iconsDiv .vi { bottom: 57%; left: 6.27% }
+#iconsDiv .janna { bottom: 57%; left: 12.54% }
+#iconsDiv .jax { bottom: 57%; left: 18.82% }
+#iconsDiv .jarvan { bottom: 57%; left: 25.08% }
+#iconsDiv .rakan { bottom: 57%; left: 31.35% }
+#iconsDiv .lulu { bottom: 57%; left: 37.62% }
+#iconsDiv .annie { bottom: 57%; left: 43.89% }
+#iconsDiv .teemo { bottom: 57%; left: 50.16% }
+#iconsDiv .zed { bottom: 57%; left: 56.43% }
+#iconsDiv .braum { bottom: 57%; left: 62.7% }
+#iconsDiv .nautilus { bottom: 57%; left: 68.97% }
+#iconsDiv .vladimir { bottom: 57%; left: 75.24% }
+
+#iconsDiv .akali { bottom: 38%; left: 0 }
+#iconsDiv .katarina { bottom: 38%; left: 6.27% }
+#iconsDiv .nunu { bottom: 38%; left: 12.54% }
+#iconsDiv .shyvana { bottom: 38%; left: 18.82% }
+#iconsDiv .kalista { bottom: 38%; left: 25.08% }
+#iconsDiv .kennen { bottom: 38%; left: 31.35% }
+#iconsDiv .veigar { bottom: 38%; left: 37.62% }
+#iconsDiv .irelia { bottom: 38%; left: 43.89% }
+#iconsDiv .sivir { bottom: 38%; left: 50.16% }
+#iconsDiv .darius { bottom: 38%; left: 56.43% }
+#iconsDiv .yuumi { bottom: 38%; left: 62.7% }
+#iconsDiv .neeko { bottom: 38%; left: 68.97% }
+#iconsDiv .kindred { bottom: 38%; left: 75.24% }
+
+#iconsDiv .talon { bottom: 19%; left: 0 }
+#iconsDiv .morgana { bottom: 19%; left: 6.27% }
+#iconsDiv .chogath { bottom: 19%; left: 12.54% }
+#iconsDiv .olaf { bottom: 19%; left: 18.82% }
+#iconsDiv .tryndamere { bottom: 19%; left: 25.08% }
+#iconsDiv .xayah { bottom: 19%; left: 31.35% }
+#iconsDiv .aurelionsol { bottom: 19%; left: 37.62% }
+#iconsDiv .shen { bottom: 19%; left: 43.89% }
+#iconsDiv .kayle { bottom: 19%; left: 50.16% }
+#iconsDiv .sejuani { bottom: 19%; left: 56.43% }
+#iconsDiv .aatrox { bottom: 19%; left: 62.7% }
+
+#iconsDiv .zilean { bottom: 0; left: 0 }
+#iconsDiv .swain { bottom: 0; left: 6.27% }
+#iconsDiv .sett { bottom: 0; left: 12.54% }
+#iconsDiv .samira { bottom: 0; left: 18.82% }
+#iconsDiv .leesin { bottom: 0; left: 25.08% }
+#iconsDiv .azir { bottom: 0; left: 31.35% }
+#iconsDiv .ornn { bottom: 0; left: 37.62% }
+#iconsDiv .yone { bottom: 0; left: 43.89% }
+
+#iconsDiv .mage { bottom: 81%; right: 13.365% }
+#iconsDiv .duelist { bottom: 81%; right: 8.91% }
+#iconsDiv .vanguard { bottom: 81%; right: 4.455% }
+#iconsDiv .dragonsoul { bottom: 81%; right: 0 }
+
+#iconsDiv .elderwood { bottom: 67.5%; right: 13.365% }
+#iconsDiv .divine { bottom: 67.5%; right: 8.91% }
+#iconsDiv .assassin { bottom: 67.5%; right: 4.455% }
+#iconsDiv .warlord { bottom: 67.5%; right: 0 }
+
+#iconsDiv .dragonsclaw { bottom: 54%; right: 13.365% }
+#iconsDiv .deathblade { bottom: 54%; right: 8.91% }
+#iconsDiv .rabadonsdeathcap { bottom: 54%; right: 4.455% }
+#iconsDiv .zephyr { bottom: 54%; right: 0 }
+
+#iconsDiv .guinsoosrageblade { bottom: 40.5%; right: 13.365% }
+#iconsDiv .locketoftheironsolari { bottom: 40.5%; right: 8.91% }
+#iconsDiv .ionicspark { bottom: 40.5%; right: 4.455% }
+#iconsDiv .shroudofstillness { bottom: 40.5%; right: 0 }
+
+#iconsDiv .infinityedge { bottom: 27%; right: 13.365% }
+#iconsDiv .zekesherald { bottom: 27%; right: 8.91% }
+#iconsDiv .chaliceofpower { bottom: 27%; right: 4.455% }
+#iconsDiv .jeweledgauntlet { bottom: 27%; right: 0 }
+
+#iconsDiv .lastwhisper { bottom: 13.5%; right: 13.365% }
+#iconsDiv .runaanshurricane { bottom: 13.5%; right: 8.91% }
+#iconsDiv .morellonomicon { bottom: 13.5%; right: 4.455% }
+#iconsDiv .hextechgunblade { bottom: 13.5%; right: 0 }
+
+#iconsDiv .guardianangel { bottom: 0; right: 13.365% }
+#iconsDiv .quicksilver { bottom: 0; right: 8.91% }
+#iconsDiv .rapidfirecannon { bottom: 0; right: 4.455% }
+#iconsDiv .handofjustice { bottom: 0; right: 0 }
+
+</style></head><body>
+
+<form id="myForm" onsubmit="goSubmit();return false;">
+<h1>XomBoard</h1>
+<table style="width:auto"><tr><td>Input opponent names:</td>
+<td><input type="text" id="name1" name="name1" autofocus onkeypress="return focusNext(this.form, 'name2', event)"><br>
+<input type="text" id="name2" name="name2" onkeypress="return focusNext(this.form, 'name3', event)"><br>
+<input type="text" id="name3" name="name3" onkeypress="return focusNext(this.form, 'name4', event)"><br>
+<input type="text" id="name4" name="name4" onkeypress="return focusNext(this.form, 'name5', event)"><br>
+<input type="text" id="name5" name="name5" onkeypress="return focusNext(this.form, 'name6', event)"><br>
+<input type="text" id="name6" name="name6" onkeypress="return focusNext(this.form, 'name7', event)"><br>
+<input type="text" id="name7" name="name7"></td>
+<td style="vertical-align:bottom"><input type="submit" id="goButton" value="Go!" style="height:3em"></td></tr></table>
+<p><hr></p>
+<p><b>XomBoard</b> is a tool for tracking opponents in the autochess game <a href="https://en.wikipedia.org/wiki/Teamfight_Tactics">Teamfight Tactics</a>, inspired by <a href="https://en.wikipedia.org/wiki/Kanban_board">Kanban boards</a>.</p>
+<p>XomBoard is designed to use a tall browser window on the left side of your screen, so it can be open without covering the player names and life totals on the right side of the game screen. If you see scrollbars, try narrowing the window more, or adjusting your font size.</p>
+<p><hr></p>
+<h3>Tracking Pairings</h3>
+<p>Knowing which opponents can get paired against you each round makes it easier to position and win.</p>
+<p>At each round, drag-and-drop the card for that round's opponent from the Non-recent column to the Recent column. You won't see that opponent again until their card reappears in the Non-recent column, which represents the opponents you could face next. Click the "X" when an opponent is eliminated; their card will disappear whenever it's no longer needed as a placeholder in the Recent column, and the capacity of the Recent column will also shrink according to the number alive. The pairings algorithm is described in detail in the following article:</p>
+<p><a href="https://giantslayer.tv/blogs/1349256428/explaining-tfts-hidden-systems-and-how-to-use-them-to-your-advantage/">https://giantslayer.tv/blogs/1349256428/explaining-tfts-hidden-systems-and-how-to-use-them-to-your-advantage/</a></p>
+<p style="font-size:small">The one detail not implemented in XomBoard is that the first round of a round robin with 4 players alive won't repeat any pairings from the round before the round robin. So you can sometimes exclude one possible opponent in this situation, even though XomBoard will have moved all cards back to Non-recent.</p>
+<p><hr></p>
+<h3>Tracking Builds</h3>
+<p>You can drag icons onto cards as visual notes, but take care not to bog yourself down in unimportant stuff. I've trimmed the item list to just what helps you predict team compositions early. Right-click to delete icons.</p>
+<p>You can experiment and be creative with how you use the icons. For example, I use Darius to signify Fortune even if that player isn't actually playing Darius.</p>
+<p><hr></p>
+<h3>Miscellaneous</h3>
+<p>Ctrl+Z to restore the most recently disappeared dead opponent card. Click "X" again to restore a dead opponent card that hasn't disappeared yet. Click "R" to rename a card (or append textual notes to the name). Refresh the page to reset. If you're playing against the same opponents, instead Ctrl+Z all the way, and right-click to delete icons.</p>
+<p>If you forgot to track a pairing and can't look it up because it was the previous stage, you can get back on track by first moving all cards back to Non-recent, then moving your most recent known opponents to Recent.</p>
+<p>Sometimes when you drag-and-drop too fast, it doesn't register, and I don't know how to fix. Sorry.</p>
+<p>Video demonstration coming soon.</p>
+<p>I'm Xom#7240 on Discord; feel free to reach out.</p>
+</form>
+
+<table id="xomban" style="height:100%;display:none">
+
+<tr style="height:32vw"><td colspan="2"><div id="iconsDiv">
+<div class="unitIcon diana"></div>
+<div class="unitIcon tahmkench"></div>
+<div class="unitIcon maokai"></div>
+<div class="unitIcon yasuo"></div>
+<div class="unitIcon fiora"></div>
+<div class="unitIcon elise"></div>
+<div class="unitIcon twistedfate"></div>
+<div class="unitIcon brand"></div>
+<div class="unitIcon tristana"></div>
+<div class="unitIcon nidalee"></div>
+<div class="unitIcon garen"></div>
+<div class="unitIcon wukong"></div>
+<div class="unitIcon nasus"></div>
+
+<div class="unitIcon pyke"></div>
+<div class="unitIcon vi"></div>
+<div class="unitIcon janna"></div>
+<div class="unitIcon jax"></div>
+<div class="unitIcon jarvan"></div>
+<div class="unitIcon rakan"></div>
+<div class="unitIcon lulu"></div>
+<div class="unitIcon annie"></div>
+<div class="unitIcon teemo"></div>
+<div class="unitIcon zed"></div>
+<div class="unitIcon braum"></div>
+<div class="unitIcon nautilus"></div>
+<div class="unitIcon vladimir"></div>
+
+<div class="unitIcon akali"></div>
+<div class="unitIcon katarina"></div>
+<div class="unitIcon nunu"></div>
+<div class="unitIcon shyvana"></div>
+<div class="unitIcon kalista"></div>
+<div class="unitIcon kennen"></div>
+<div class="unitIcon veigar"></div>
+<div class="unitIcon irelia"></div>
+<div class="unitIcon sivir"></div>
+<div class="unitIcon darius"></div>
+<div class="unitIcon yuumi"></div>
+<div class="unitIcon neeko"></div>
+<div class="unitIcon kindred"></div>
+
+<div class="unitIcon talon"></div>
+<div class="unitIcon morgana"></div>
+<div class="unitIcon chogath"></div>
+<div class="unitIcon olaf"></div>
+<div class="unitIcon tryndamere"></div>
+<div class="unitIcon xayah"></div>
+<div class="unitIcon aurelionsol"></div>
+<div class="unitIcon shen"></div>
+<div class="unitIcon kayle"></div>
+<div class="unitIcon sejuani"></div>
+<div class="unitIcon aatrox"></div>
+
+<div class="unitIcon zilean"></div>
+<div class="unitIcon swain"></div>
+<div class="unitIcon sett"></div>
+<div class="unitIcon samira"></div>
+<div class="unitIcon leesin"></div>
+<div class="unitIcon azir"></div>
+<div class="unitIcon ornn"></div>
+<div class="unitIcon yone"></div>
+
+<div class="itemIcon mage"></div>
+<div class="itemIcon duelist"></div>
+<div class="itemIcon vanguard"></div>
+<div class="itemIcon dragonsoul"></div>
+
+<div class="itemIcon elderwood"></div>
+<div class="itemIcon divine"></div>
+<div class="itemIcon assassin"></div>
+<div class="itemIcon warlord"></div>
+
+<div class="itemIcon dragonsclaw"></div>
+<div class="itemIcon deathblade"></div>
+<div class="itemIcon rabadonsdeathcap"></div>
+<div class="itemIcon zephyr"></div>
+
+<div class="itemIcon guinsoosrageblade"></div>
+<div class="itemIcon locketoftheironsolari"></div>
+<div class="itemIcon ionicspark"></div>
+<div class="itemIcon shroudofstillness"></div>
+
+<div class="itemIcon infinityedge"></div>
+<div class="itemIcon zekesherald"></div>
+<div class="itemIcon chaliceofpower"></div>
+<div class="itemIcon jeweledgauntlet"></div>
+
+<div class="itemIcon lastwhisper"></div>
+<div class="itemIcon runaanshurricane"></div>
+<div class="itemIcon morellonomicon"></div>
+<div class="itemIcon hextechgunblade"></div>
+
+<div class="itemIcon guardianangel"></div>
+<div class="itemIcon quicksilver"></div>
+<div class="itemIcon rapidfirecannon"></div>
+<div class="itemIcon handofjustice"></div>
+</div></td></tr>
+
+<tr><td id="recent"><h2>Recent</h2></td><td id="nonRecent"><h2>Non-recent</h2></tr>
+</table>
+
+<script type="text/javascript">
+
+var undos = [];
+var alive = 8;
+
+function focusNext(form, elemName, evt) {
+  evt = (evt) ? evt : event;
+  var charCode = (evt.charCode) ? evt.charCode : ((evt.which) ? evt.which : evt.keyCode);
+  if (charCode == 13 || charCode == 3) {
+    form.elements[elemName].focus( );
+    return false;
+  }
+  return true;
+}
+
+function goSubmit() {
+  for (var i = 1; i <= 7; i++) {
+    undos.push({ id: i, name: document.getElementById('name' + i).value, items: [], units: [] });
+    undoEliminate(true);
+  }
+  var myForm = document.getElementById('myForm');
+  myForm.parentNode.removeChild(myForm);
+  document.getElementById('xomban').style.display = 'table';
+  var icons = document.querySelectorAll('#iconsDiv .unitIcon');
+  for (var i = 0; i < icons.length; i++) {
+    (function(){
+      var icon = icons[i];
+      var classes = icon.classList.values();
+      for (var className of classes) {
+        if (className !== 'unitIcon') {
+          icon.draggable = true;
+          icon.ondragstart = function(e){
+            e.dataTransfer.setData('text/unit-id', className);
+            e.dataTransfer.effectAllowed = 'copy';
+          };
+          break;
+        }
+      }
+    }());
+  }
+  icons = document.querySelectorAll('#iconsDiv .itemIcon');
+  for (var i = 0; i < icons.length; i++) {
+    (function(){
+      var icon = icons[i];
+      var classes = icon.classList.values();
+      for (var className of classes) {
+        if (className !== 'itemIcon') {
+          icon.draggable = true;
+          icon.ondragstart = function(e){
+            e.dataTransfer.setData('text/item-id', className);
+            e.dataTransfer.effectAllowed = 'copy';
+          };
+          break;
+        }
+      }
+    }());
+  }
+  var nonRecent = document.getElementById('nonRecent');
+  var recent = document.getElementById('recent');
+  nonRecent.ondragover = function(e){
+    if (e.dataTransfer.types.includes('text/card-id')) {
+      e.preventDefault();
+    }
+  };
+  recent.ondragover = function(e){
+    if (e.dataTransfer.types.includes('text/card-id')) {
+      e.preventDefault();
+    }
+  };
+  nonRecent.ondrop = function(e){
+    if (e.dataTransfer.types.includes('text/card-id')) {
+      e.dataTransfer.items[0].getAsString(function(s){
+        var card = document.getElementById('card' + s);
+        nonRecent.appendChild(card);
+      });
+      e.preventDefault();
+    }
+  };
+  recent.ondrop = function(e){
+    if (e.dataTransfer.types.includes('text/card-id')) {
+      e.dataTransfer.items[0].getAsString(function(s){
+        var card = document.getElementById('card' + s);
+        recent.appendChild(card);
+        updateRecent(false);
+      });
+      e.preventDefault();
+    }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'z') {
+      undoEliminate();
+    }
+  });
+}
+
+function undoEliminate(isSetup) {
+  if (undos.length === 0) {
+    return;
+  }
+  var x = undos.pop();
+  var card = document.createElement('div');
+  card.id = 'card' + x.id;
+  card.classList.add('card');
+  card.draggable = true;
+  card.ondragstart = function(e){
+    e.dataTransfer.setData('text/card-id', x.id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+  card.ondragover = function(e){
+    if (e.dataTransfer.types.includes('text/unit-id') || e.dataTransfer.types.includes('text/item-id')) {
+      e.preventDefault();
+    }
+  };
+  card.ondrop = function(e){
+    if (e.dataTransfer.types.includes('text/unit-id')) {
+      e.dataTransfer.items[0].getAsString(function(s){ addUnit(x.id, s); });
+      e.preventDefault();
+      return;
+    }
+    if (e.dataTransfer.types.includes('text/item-id')) {
+      e.dataTransfer.items[0].getAsString(function(s){ addItem(x.id, s); });
+      e.preventDefault();
+    }
+  };
+  card.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  }, false);
+  card.innerHTML = '<a href="#" onclick="eliminate(' + x.id + ');return false;">X</a>&nbsp;&nbsp;<a href="#" onclick="rename(' + x.id + ');return false;">R</a>&nbsp; <span id="nom' + x.id + '" style="position:relative;z-index:2">' + x.name + '</span><div id="items' + x.id + '" class="cardItems"></div><div id="units' + x.id + '" class="cardUnits"></div>';
+  document.getElementById('nonRecent').appendChild(card);
+  for (var i = 0; i < x.items.length; i++) {
+    addItem(x.id, x.items[i]);
+  }
+  for (var i = 0; i < x.units.length; i++) {
+    addUnit(x.id, x.units[i]);
+  }
+  if (!isSetup) {
+    alive++;
+    updateDummy();
+  }
+}
+
+function addItem(i, itemId) {
+  var item = document.createElement('div');
+  item.classList.add('itemIcon');
+  item.classList.add(itemId);
+  document.getElementById('items' + i).appendChild(item);
+  item.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    e.target.parentNode.removeChild(e.target);
+    return false;
+  }, false);
+}
+
+function addUnit(i, unitId) {
+  var unit = document.createElement('div');
+  unit.classList.add('unitIcon');
+  unit.classList.add(unitId);
+  document.getElementById('units' + i).appendChild(unit);
+  unit.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    e.target.parentNode.removeChild(e.target);
+    return false;
+  }, false);
+}
+
+function rename(i) {
+  var nameSpan = document.getElementById('nom' + i);
+  var oldName = nameSpan.innerHTML;
+  var x = prompt('Rename "' + oldName + '":', oldName);
+  if (x !== null) {
+    nameSpan.innerHTML = x;
+  }
+}
+
+function eliminate(i) {
+  var card = document.getElementById('card' + i);
+  var classes = card.classList.values();
+  for (var className of classes) {
+    if (className === 'eliminated') {
+      card.classList.remove('eliminated');
+      alive++;
+      updateDummy();
+      return;
+    }
+  }
+  if (card.parentNode.id === 'recent') {
+    card.classList.add('eliminated');
+  } else {
+    removeCard(i);
+  }
+  alive--;
+  updateDummy();
+  updateRecent(true);
+}
+
+// removeCard(i) is not responsible for updating the alive counter
+function removeCard(i) {
+  var card = document.getElementById('card' + i);
+  var undoInfo = {
+    id: i,
+    name: document.getElementById('nom' + i).innerHTML,
+    items: [],
+    units: []
+  };
+  var icons = document.querySelectorAll('#card' + i + ' .unitIcon');
+  for (var k = 0; k < icons.length; k++) {
+    var icon = icons[k];
+    var classes = icon.classList.values();
+    for (var className of classes) {
+      if (className !== 'unitIcon') {
+        undoInfo.units.push(className);
+        break;
+      }
+    }
+  }
+  icons = document.querySelectorAll('#card' + i + ' .itemIcon');
+  for (var k = 0; k < icons.length; k++) {
+    var icon = icons[k];
+    var classes = icon.classList.values();
+    for (var className of classes) {
+      if (className !== 'itemIcon') {
+        undoInfo.items.push(className);
+        break;
+      }
+    }
+  }
+  undos.push(undoInfo);
+  card.parentNode.removeChild(card);
+}
+
+function updateDummy() {
+  var dummy = document.getElementById('card0');
+  var dummyActive = alive % 2 === 1;
+  if (dummyActive) {
+    if (!dummy) {
+      dummy = document.createElement('div');
+      dummy.id = 'card0';
+      dummy.classList.add('card');
+      dummy.draggable = true;
+      dummy.ondragstart = function(e){
+        e.dataTransfer.setData('text/card-id', 0);
+        e.dataTransfer.effectAllowed = 'move';
+      };
+      dummy.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      }, false);
+      dummy.innerHTML = '<i><span id="nom0">***DUMMY***</span></i><div id="items0" class="cardItems"></div><div id="units0" class="cardUnits"></div>';
+      document.getElementById('nonRecent').appendChild(dummy);
+    }
+    return;
+  }
+  if (dummy && dummy.parentNode.id === 'nonRecent') {
+    dummy.parentNode.removeChild(dummy);
+  }
+}
+
+// updateRecent assumes updateDummy has already been called
+// updateRecent will call updateDummy again if needed
+function updateRecent(justDecremented) {
+  var nonRecent = document.getElementById('nonRecent');
+  if (alive <= 4) {
+    if (justDecremented || document.querySelectorAll('#nonRecent .card').length === 0) {
+      var cards = document.querySelectorAll('#recent .card');
+      for (var i = 0; i < cards.length; i++) {
+        var card = cards[i];
+        var marked = false;
+        var classes = card.classList.values();
+        for (var className of classes) {
+          if (className === 'eliminated') {
+            marked = true;
+            break;
+          }
+        }
+        if (marked) {
+          removeCard(parseInt(card.id.charAt(4), 10));
+        } else {
+          nonRecent.appendChild(card);
+        }
+      }
+      updateDummy();
+    }
+    return;
+  }
+  var cards = document.querySelectorAll('#recent .card');
+  var excess = cards.length - (alive === 5 ? 2 : alive - 4);
+  for (var i = 0; i < excess; i++) {
+    var card = cards[i];
+    var marked = false;
+    var classes = card.classList.values();
+    for (var className of classes) {
+      if (className === 'eliminated') {
+        marked = true;
+        break;
+      }
+    }
+    if (marked) {
+      removeCard(parseInt(card.id.charAt(4), 10));
+    } else {
+      nonRecent.appendChild(card);
+    }
+  }
+  if (excess > 0) {
+    updateDummy();
+  }
+}
+
+</script></body></html>
