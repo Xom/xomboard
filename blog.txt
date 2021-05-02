@@ -1,0 +1,28 @@
+Xom's thoughts on Teamfight Tactics
+
+2020-12-22 started playing TFT (last patch of 4.0)
+2021-1-15 promoted to Master
+2021-1-21 release of 4.5
+2021-3-20 promoted to Grandmaster
+2021-3-25 won Boyses tournament
+2021-4-9 won LANFest tournament
+2021-4-11 won Maskoff758 tournament
+2021-4-17 promoted to Challenger (having played approx. 800 games)
+2021-4-27 demoted to Grandmaster (same patch)
+2021-4-28 end of 4.5; wrote this retrospective
+
+I always wanted to play a game like TFT. I wanted to play a game where you got dealt some cards and had to make the best of them, where there was enough chaos so you had to get a feel for what's strong instead of calculating it, and maybe where there was a little bit of long-term economic planning, too. Before I found TFT I thought I'd have to make it myself. It was going to be a dexterity game about flicking mahjong tiles. (As it happens, the original autochess game was indeed designed by mahjong players.) But then I found TFT so I didn't have to.
+
+To get good, I got a lot of value from studying the statistics on tactics.tools. After the Last Whisper rework, it seemed to me that the physical damage teams weren't doing well, so I tried one-tricking ASol and it got me to Grandmaster. But the more useful tab is the units tab, where you can see what items work on each unit. For example, tank items perform terribly on Sett, presumably because you want him to start sit-ups ASAP, but I still saw Challengers with stuff like Dragon Claw on Sett. Probably other aspects of my own play were equally baffling to them. The interpretation is tricky, though. For example, Hand of Justice is inherently overrated on every unit, because it's also really good on every item holder before you buy that unit. Which is, of course, still reason to build Hand of Justice.
+
+https://xomboard.neocities.org/ is a tool I made. You can read about it on that page. 90% of the value is in tracking pairings though, despite half the UI being the teamcomp icons.
+
+Some people didn't like the 3-lantern games in the last patch, but I think the gold lanterns and FoN lanterns were actually pretty interesting. (Loaded Dice is similar to gold, but it's somewhat questionable for game balance, of course.) I read about galaxies in the older set, and I think it's more interesting to throw the curveball in the middle of the game, after players have already developed some sort of position.
+
+I'm sad that I didn't get to play much of 4.0, because from what I've read, it was better-designed than 4.5. The teamcomps were more flexible, as evidenced by the need to help players find a suitable chosen in 4.5 by increasing the rate of chosens in the shop from 33% to 50%. And supposedly the items were more flexible, so that you didn't feel screwed if you lost carousel at game start.
+
+Another interesting thing I didn't read about until afterward was the divergence of Chinese meta in 4.0: "ending patches of Fates, NA players are still running Jhin carry. On our server, we 100% ran Shojin Guinsoo QSS Jinx and force 3 star at level 7." (There was no such dramatic divergence in 4.5.)
+
+2021-4-30 addendum: I have joked that if you really wanted a chill, casual mode in autochess, it would be "no-scouting mode" where nobody can see your board. Now I suddenly remember playing limited in MtG Online, where the optimal play used to be, after finishing your own match, to fast-forward through the replays of every other match and write down as much of their decklists as you could. In a later patch, they stopped publishing the replays until the lobby was over. I realize scouting is core to autochess, of course. But it does make the game exhausting to play.
+
+2021-5-1 addendum: Here's a casual mode design where you can have the core gameplay of scouting without worrying about anybody scouting you back! =P I call it "1v8" mode. Let the player play alongside a replay. Every round, fight a dummy of one of the players in the replay. (Subtract all nine players' units from the live player's shop deck, but leave the buys in the replay unchanged. It ends when the player dies or the replay ends.)

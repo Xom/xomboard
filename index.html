@@ -26,12 +26,13 @@ td { vertical-align: top }
 .cardUnits .unitIcon { display: inline-block; margin-left: 6px; height: 2.8em; width: 2.8em }
 .eliminated { background-color: black; text-decoration: line-through }
 
-.unitIcon, .itemIcon { background-image: url('tft45.png'); border: 1px black solid }
+.unitIcon, .itemIcon { background-image: url('tft50.png'); border: 1px black solid }
 .unitIcon { background-size: 1300% }
 .itemIcon { background-size: 2600% }
 #iconsDiv { width: 100%; padding: 0 0 33% 0; position: relative; margin-bottom: 0.5em }
 #iconsDiv .unitIcon { position: absolute; height: 17.872%; width: 5.898% }
 #iconsDiv .itemIcon { position: absolute; height: 12.245%; width: 4.041% }
+.shadowItem { background-image: url('tft5x.png') }
 
 .diana { background-position: 0 0 }
 .tahmkench { background-position: -100% 0 }
@@ -242,6 +243,7 @@ td { vertical-align: top }
 <p><hr></p>
 <p><b>XomBoard</b> is a tool for tracking opponents in the autochess game <a href="https://en.wikipedia.org/wiki/Teamfight_Tactics">Teamfight Tactics</a>, inspired by <a href="https://en.wikipedia.org/wiki/Kanban_board">Kanban boards</a>.</p>
 <p>XomBoard is designed to use a tall browser window on the left side of your screen, so it can be open without covering the player names and life totals on the right side of the game screen. If you see scrollbars, try narrowing the window more, or adjusting your font size.</p>
+<p>Set 5 update: <u>Shift+drag for shadow items.</u> I haven't played Set 5 so I just used statistics to guess the most relevant items. Give me feedback at Xom#7240 on Discord.</p>
 <p><hr></p>
 <h3>Tracking Pairings</h3>
 <p>Knowing which opponents can get paired against you each round makes it easier to position and win.</p>
@@ -262,6 +264,7 @@ td { vertical-align: top }
 <p>If you forgot to track a pairing and can't look it up because it was the previous stage, you can get back on track by first moving all cards back to Non-recent, then moving your most recent known opponents to Recent.</p>
 <p>Sometimes when you drag-and-drop too fast, it doesn't register, and I don't know how to fix. Sorry.</p>
 <p>I'm Xom#7240 on Discord; feel free to reach out.</p>
+<p><a href="https://github.com/Xom/xomboard">Source code on GitHub.</a></p>
 </form>
 
 <table id="xomban" style="height:100%;display:none">
@@ -419,6 +422,9 @@ function goSubmit() {
           icon.draggable = true;
           icon.ondragstart = function(e){
             e.dataTransfer.setData('text/item-id', className);
+            if (e.shiftKey) {
+              e.dataTransfer.setData('text/item-shadow', '^');
+            }
             e.dataTransfer.effectAllowed = 'copy';
           };
           break;
@@ -489,7 +495,8 @@ function undoEliminate(isSetup) {
       return;
     }
     if (e.dataTransfer.types.includes('text/item-id')) {
-      e.dataTransfer.items[0].getAsString(function(s){ addItem(x.id, s); });
+      var isShadow = e.dataTransfer.types.includes('text/item-shadow');
+      e.dataTransfer.items[0].getAsString(function(s){ addItem(x.id, s, isShadow); });
       e.preventDefault();
     }
   };
@@ -500,7 +507,11 @@ function undoEliminate(isSetup) {
   card.innerHTML = '<a href="#" onclick="eliminate(' + x.id + ');return false;">X</a>&nbsp;&nbsp;<a href="#" onclick="rename(' + x.id + ');return false;">R</a>&nbsp; <span id="nom' + x.id + '" style="position:relative;z-index:2">' + x.name + '</span><div id="items' + x.id + '" class="cardItems"></div><div id="units' + x.id + '" class="cardUnits"></div>';
   document.getElementById('nonRecent').appendChild(card);
   for (var i = 0; i < x.items.length; i++) {
-    addItem(x.id, x.items[i]);
+    if (x.items[i].charAt(0) === '^') {
+      addItem(x.id, x.items[i].slice(1), true);
+    } else {
+      addItem(x.id, x.items[i], false);
+    }
   }
   for (var i = 0; i < x.units.length; i++) {
     addUnit(x.id, x.units[i]);
@@ -511,9 +522,12 @@ function undoEliminate(isSetup) {
   }
 }
 
-function addItem(i, itemId) {
+function addItem(i, itemId, isShadow) {
   var item = document.createElement('div');
   item.classList.add('itemIcon');
+  if (isShadow) {
+    item.classList.add('shadowItem');
+  }
   item.classList.add(itemId);
   document.getElementById('items' + i).appendChild(item);
   item.addEventListener('contextmenu', function(e) {
@@ -589,11 +603,21 @@ function removeCard(i) {
   for (var k = 0; k < icons.length; k++) {
     var icon = icons[k];
     var classes = icon.classList.values();
+    var isShadow = false;
+    var itemName = false;
     for (var className of classes) {
-      if (className !== 'itemIcon') {
-        undoInfo.items.push(className);
-        break;
+      switch (className) {
+        case 'shadowItem':
+          isShadow = true;
+          // fall through
+        case 'itemIcon':
+          break;
+        default:
+          itemName = className;
       }
+    }
+    if (itemName) {
+      undoInfo.items.push(isShadow ? ('^' + itemName) : itemName);
     }
   }
   undos.push(undoInfo);
