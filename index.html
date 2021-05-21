@@ -33,6 +33,7 @@ td { vertical-align: top }
 #iconsDiv .unitIcon { position: absolute; height: 17.872%; width: 5.898% }
 #iconsDiv .itemIcon { position: absolute; height: 12.245%; width: 4.041% }
 .shadowItem { background-image: url('tft5x.png') }
+.shadowUnit { opacity: 0.4 }
 
 .diana { background-position: 0 0 }
 .tahmkench { background-position: -100% 0 }
@@ -243,7 +244,7 @@ td { vertical-align: top }
 <p><hr></p>
 <p><b>XomBoard</b> is a tool for tracking opponents in the autochess game <a href="https://en.wikipedia.org/wiki/Teamfight_Tactics">Teamfight Tactics</a>, inspired by <a href="https://en.wikipedia.org/wiki/Kanban_board">Kanban boards</a>.</p>
 <p>XomBoard is designed to use a tall browser window on the left side of your screen, so it can be open without covering the player names and life totals on the right side of the game screen. If you see scrollbars, try narrowing the window more, or adjusting your font size.</p>
-<p>Set 5 update: <u>Shift+drag for shadow items.</u></p>
+<p>Set 5 update: <u>Shift+drag for shadow items.</u> Shift+drag units for a transparency effect to signify predictions; later, right-click to remove transparency; right-click again to delete icon.</p>
 <p><hr></p>
 <h3>Tracking Pairings</h3>
 <p>Knowing which opponents can get paired against you each round makes it easier to position and win.</p>
@@ -405,6 +406,9 @@ function goSubmit() {
           icon.draggable = true;
           icon.ondragstart = function(e){
             e.dataTransfer.setData('text/unit-id', className);
+            if (e.shiftKey) {
+              e.dataTransfer.setData('text/unit-shadow', '^');
+            }
             e.dataTransfer.effectAllowed = 'copy';
           };
           break;
@@ -490,7 +494,8 @@ function undoEliminate(isSetup) {
   };
   card.ondrop = function(e){
     if (e.dataTransfer.types.includes('text/unit-id')) {
-      e.dataTransfer.items[0].getAsString(function(s){ addUnit(x.id, s); });
+      var isShadow = e.dataTransfer.types.includes('text/unit-shadow');
+      e.dataTransfer.items[0].getAsString(function(s){ addUnit(x.id, s, isShadow); });
       e.preventDefault();
       return;
     }
@@ -514,7 +519,11 @@ function undoEliminate(isSetup) {
     }
   }
   for (var i = 0; i < x.units.length; i++) {
-    addUnit(x.id, x.units[i]);
+    if (x.units[i].charAt(0) === '^') {
+      addUnit(x.id, x.units[i].slice(1), true);
+    } else {
+      addUnit(x.id, x.units[i], false);
+    }
   }
   if (!isSetup) {
     alive++;
@@ -537,14 +546,21 @@ function addItem(i, itemId, isShadow) {
   }, false);
 }
 
-function addUnit(i, unitId) {
+function addUnit(i, unitId, isShadow) {
   var unit = document.createElement('div');
   unit.classList.add('unitIcon');
+  if (isShadow) {
+    unit.classList.add('shadowUnit');
+  }
   unit.classList.add(unitId);
   document.getElementById('units' + i).appendChild(unit);
   unit.addEventListener('contextmenu', function(e) {
     e.preventDefault();
-    e.target.parentNode.removeChild(e.target);
+    if (e.target.classList.contains('shadowUnit')) {
+      e.target.classList.remove('shadowUnit');
+    } else {
+      e.target.parentNode.removeChild(e.target);
+    }
     return false;
   }, false);
 }
@@ -592,11 +608,21 @@ function removeCard(i) {
   for (var k = 0; k < icons.length; k++) {
     var icon = icons[k];
     var classes = icon.classList.values();
+    var isShadow = false;
+    var unitName = false;
     for (var className of classes) {
-      if (className !== 'unitIcon') {
-        undoInfo.units.push(className);
-        break;
+      switch (className) {
+        case 'shadowUnit':
+          isShadow = true;
+          // fall through
+        case 'unitIcon':
+          break;
+        default:
+          unitName = className;
       }
+    }
+    if (unitName) {
+      undoInfo.units.push(isShadow ? ('^' + unitName) : unitName);
     }
   }
   icons = document.querySelectorAll('#card' + i + ' .itemIcon');
